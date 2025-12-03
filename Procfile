@@ -1,1 +1,1 @@
-web: python Storage.py
+web: gunicorn Storage:app --bind 0.0.0.0:$PORT

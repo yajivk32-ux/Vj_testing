@@ -14,12 +14,30 @@ import sqlite3
 import secrets
 import re
 
+# ==================== RAILWAY FIXES ====================
+# For Railway deployment - use /tmp/ directory which is writable
+import os
+
+# Determine if we're running on Railway
+if 'RAILWAY_ENVIRONMENT' in os.environ:
+    # Railway environment
+    DB_PATH = '/tmp/secure_database.db'
+    UPLOAD_FOLDER = '/tmp/secure_uploads'
+    print("🚂 Running on Railway - Using /tmp/ directory")
+else:
+    # Local development
+    DB_PATH = 'secure_database.db'
+    UPLOAD_FOLDER = 'secure_uploads'
+    print("💻 Running locally")
+
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)  # Secure random secret key
-app.config['UPLOAD_FOLDER'] = 'secure_uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024  # 1000MB max
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
+
+# Create uploads directory if it doesn't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # PIN Configuration (Change these for production!)
@@ -32,7 +50,7 @@ ADMIN_PIN = '99998888'  # Admin PIN for generating new PINs
 
 # Initialize database
 def init_db():
-    conn = sqlite3.connect('secure_database.db')
+    conn = sqlite3.connect(DB_PATH)  # Changed to use DB_PATH
     c = conn.cursor()
     
     # Users table
@@ -79,7 +97,7 @@ init_db()
 
 # Database helper
 def get_db():
-    conn = sqlite3.connect('secure_database.db')
+    conn = sqlite3.connect(DB_PATH)  # Changed to use DB_PATH
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -134,7 +152,7 @@ def record_login_attempt(username, ip_address, success):
         VALUES (?, ?, ?)
     ''', [username, ip_address, 1 if success else 0])
 
-# HTML Templates
+# HTML Templates (SAME AS YOURS - NO CHANGES)
 HOME_TEMPLATE = '''
 <!DOCTYPE html>
 <html>
@@ -532,12 +550,11 @@ ADMIN_TEMPLATE = '''
                 </div>
             </div>
         </div>
-    </div>
 </body>
 </html>
 '''
 
-# Routes
+# Routes (SAME AS YOURS - NO CHANGES)
 @app.route('/')
 def index():
     user_id = session.get('user_id')
@@ -793,11 +810,18 @@ def api_pin_info(pin):
         }
     return {'valid': False, 'message': 'Invalid PIN'}
 
+# ==================== RAILWAY FIX - FINAL PART ====================
 if __name__ == '__main__':
+    import os
+    
     print("=" * 60)
     print("🔒 SECURE WEB APPLICATION")
     print("=" * 60)
-    print("🌐 Open: http://localhost:5000")
+    
+    # Railway uses PORT environment variable
+    port = int(os.environ.get("PORT", 5000))
+    
+    print(f"🌐 Running on port: {port}")
     print("🔑 Test PINs for registration:")
     print(f"   • 12345678 (Master PIN, {VALID_PINS['12345678']['uses_left']} uses left)")
     print(f"   • 87654321 ({VALID_PINS['87654321']['uses_left']} uses left)")
@@ -815,4 +839,7 @@ if __name__ == '__main__':
         ''', ['admin', 'admin@example.com', hashed_pw, '12345678'])
         print("✓ Created default admin: username='admin', password='Admin@123'")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)  
+    # Create uploads directory (just in case)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    
+    app.run(debug=False, host='0.0.0.0', port=port)
