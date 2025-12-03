@@ -1,1 +1,1 @@
-web: gunicorn Storage:app --bind 0.0.0.0:$PORT
+web: gunicorn Storage:app --bind 0.0.0.0:8080

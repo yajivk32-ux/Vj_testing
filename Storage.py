@@ -2,7 +2,7 @@
 secure_web_app.py
 Web app with PIN-protected registration
 Run: python secure_web_app.py
-Open: http://localhost:5000
+Open: http://localhost:8080
 """
 
 from flask import Flask, render_template_string, request, redirect, flash, session, send_file
@@ -819,7 +819,7 @@ if __name__ == '__main__':
     print("=" * 60)
     
     # Railway uses PORT environment variable
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 8080))
     
     print(f"🌐 Running on port: {port}")
     print("🔑 Test PINs for registration:")
