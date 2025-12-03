@@ -18,7 +18,7 @@ import re
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)  # Secure random secret key
 app.config['UPLOAD_FOLDER'] = 'secure_uploads'
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB max
+app.config['MAX_CONTENT_LENGTH'] = 1000 * 1024 * 1024  # 1000MB max
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
@@ -815,4 +815,4 @@ if __name__ == '__main__':
         ''', ['admin', 'admin@example.com', hashed_pw, '12345678'])
         print("✓ Created default admin: username='admin', password='Admin@123'")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)  
