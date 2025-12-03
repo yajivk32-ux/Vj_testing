@@ -1,10 +1,22 @@
+# railway.toml - UPDATED
 [build]
 builder = "nixpacks"
 
 [deploy]
 healthcheckPath = "/health"
-healthcheckTimeout = 100
+healthcheckTimeout = 30  # Railway's max is 30
+startTimeout = 120  # Add this
 
 [[services]]
 name = "web"
 port = 8080
+
+# ✅ ADD THESE for Railway
+[service]
+  [service.healthCheck]
+  httpPath = "/health"
+  initialDelay = 10
+  periodSeconds = 10
+  timeoutSeconds = 5
+  successThreshold = 1
+  failureThreshold = 3
