@@ -35,11 +35,11 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # ==================== SECRET PIN CONFIGURATION ====================
 # These are NOT shown to users - only for admin
 VALID_PINS = {
-    '77087078': {'uses_left': 100, 'created_by': 'admin'},  # Master PIN
-    '75399455': {'uses_left': 5, 'created_by': 'admin'},    # Limited use PIN
-    '97505232': {'uses_left': 1, 'created_by': 'admin'},    # One-time PIN
+    '12345678': {'uses_left': 100, 'created_by': 'admin'},  # Master PIN
+    '87654321': {'uses_left': 5, 'created_by': 'admin'},    # Limited use PIN
+    '11112222': {'uses_left': 1, 'created_by': 'admin'},    # One-time PIN
 }
-ADMIN_PIN = '91301511'  # Admin PIN for generating new PINs
+ADMIN_PIN = '99998888'  # Admin PIN for generating new PINs
 
 # Initialize database
 def init_db():
